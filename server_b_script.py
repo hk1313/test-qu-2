@@ -3,9 +3,9 @@ from datetime import datetime
 import os
 
 def receive_message():
-    sqs = boto3.client('sqs', region_name='us-east-1')
-    queue_url = 'https://sqs.us-east-1.amazonaws.com/184850965464/message-queue'
-    s3 = boto3.client('s3', region_name='us-east-1')
+    sqs = boto3.client('sqs', region_name='eu-west-1')
+    queue_url = 'https://sqs.eu-west-1.amazonaws.com/184850965464/message-queue'
+    s3 = boto3.client('s3', region_name='eu-west-1')
     bucket_name = 'message-bucket'
 
     response = sqs.receive_message(
