@@ -10,6 +10,7 @@ resource "aws_s3_bucket" "script_bucket_a" {
 }
 
 resource "aws_s3_bucket_versioning" "script_bucket_a" {
+  provider = aws.account_a
   bucket = aws_s3_bucket.script_bucket_a.id
   versioning_configuration {
     status = "Enabled"
@@ -17,6 +18,7 @@ resource "aws_s3_bucket_versioning" "script_bucket_a" {
 }
 
 resource "aws_s3_bucket_object" "objects_a" {
+  provider = aws.account_a
   depends_on = [
     aws_s3_bucket.script_bucket_a
   ]
@@ -33,6 +35,7 @@ resource "aws_s3_bucket" "script_bucket_b" {
 }
 
 resource "aws_s3_bucket_versioning" "script_bucket_b" {
+  provider = aws.account_b
   bucket = aws_s3_bucket.script_bucket_b.id
   versioning_configuration {
     status = "Enabled"
@@ -40,6 +43,7 @@ resource "aws_s3_bucket_versioning" "script_bucket_b" {
 }
 
 resource "aws_s3_bucket_object" "objects_b" {
+  provider = aws.account_b
   depends_on = [
     aws_s3_bucket.script_bucket_b
   ]
