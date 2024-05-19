@@ -17,15 +17,19 @@ jobs:
         with:
           terraform_version: 1.5.2
 
-      - name: Configure AWS Credentials
+      - name: Set up AWS profile for CICD account where your Terraform state bucket.
         uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.ACCOUNT_A_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.ACCOUNT_A_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Create AWS Profiles
         run: |
           # Set up AWS profile for CICD account where your Terraform state bucket.
-          aws configure set aws_access_key_id ${{ secrets.ACCOUNT_A_AWS_ACCESS_KEY_ID }}
-          aws configure set aws_secret_access_key ${{ secrets.ACCOUNT_A_AWS_SECRET_ACCESS_KEY }}
-          aws configure set region us-east-1
+          # aws configure set aws_access_key_id ${{ secrets.ACCOUNT_A_AWS_ACCESS_KEY_ID }}
+          # aws configure set aws_secret_access_key ${{ secrets.ACCOUNT_A_AWS_SECRET_ACCESS_KEY }}
+          # aws configure set region us-east-1
 
           # Set up AWS profile for Account-A
           aws configure set aws_access_key_id ${{ secrets.ACCOUNT_A_AWS_ACCESS_KEY_ID }} --profile account_a
