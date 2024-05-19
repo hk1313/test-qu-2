@@ -64,11 +64,14 @@ resource "aws_instance" "server_b" {
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
-              yum install python3 -y
+              yum install python3 cronie -y
               pip3 install boto3
+              systemctl start crond
+              systemctl enable crond
               aws s3 cp s3://script-bucket-guardian-b/server_b_script.py /home/ec2-user/server_b_script.py
               chmod +x /home/ec2-user/server_b_script.py
-              echo "* * * * *  python3 /home/ec2-user/server_b_script.py" >> /etc/crontab
+              cat <<EOF | tee /etc/cron.d/every_minute
+              * * * * * python3 /home/ec2-user/server_b_script.py
               EOF
 
   tags = {
