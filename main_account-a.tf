@@ -69,8 +69,8 @@ resource "aws_s3_bucket_policy" "message_bucket" {
         Principal = "*",
         Action    = "s3:PutObject",
         Resource  = [
-          aws_s3_bucket.processed_data.arn,
-          "${aws_s3_bucket.processed_data.arn}/*",
+          aws_s3_bucket.message_bucket.arn,
+          "${aws_s3_bucket.message_bucket.arn}/*",
         ],
         Condition = {
           ArnLike  = {
@@ -100,9 +100,9 @@ resource "aws_iam_role" "ec2_role_a" {
   })
 }
 
-resource "aws_iam_role_policy" "ec2_policy" {
+resource "aws_iam_role_policy" "ec2_role_a" {
   provider = aws.account_a
-  name     = "ec2_policy"
+  name     = "ec2_role_a"
   role     = aws_iam_role.ec2_role_a.id
   policy   = jsonencode({
     Version = "2012-10-17",
@@ -124,7 +124,7 @@ resource "aws_instance" "server_a" {
   provider = aws.account_a
   ami           = var.ami
   instance_type = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_a.name
 
   user_data = <<-EOF
               #!/bin/bash
@@ -141,8 +141,8 @@ resource "aws_instance" "server_a" {
   }
 }
 
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
+resource "aws_iam_instance_profile" "ec2_instance_profile_a" {
   provider = aws.account_a
-  name     = "ec2_instance_profile"
+  name     = "ec2_instance_profile_a"
   role     = aws_iam_role.ec2_role_a.name
 }

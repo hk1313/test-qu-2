@@ -21,9 +21,9 @@ resource "aws_iam_role" "ec2_role_b" {
   })
 }
 
-resource "aws_iam_role_policy" "ec2_policy" {
+resource "aws_iam_role_policy" "ec2_role_b" {
   provider = aws.account_b
-  name     = "ec2_policy"
+  name     = "ec2_role_b"
   role     = aws_iam_role.ec2_role_b.id
   policy   = jsonencode({
     Version = "2012-10-17",
@@ -49,14 +49,14 @@ resource "aws_instance" "server_b" {
   provider = aws.account_b
   ami           = var.ami
   instance_type = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_b.name
 
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
               yum install python3 -y
               pip3 install boto3
-              aws s3 cp s3://<bucket-name>/server_b_script.py /home/ec2-user/server_b_script.py
+              aws s3 cp s3://script-bucket-guardian-b/server_b_script.py /home/ec2-user/server_b_script.py
               chmod +x /home/ec2-user/server_b_script.py
               echo "@reboot python3 /home/ec2-user/server_b_script.py" >> /etc/crontab
               EOF
@@ -66,8 +66,8 @@ resource "aws_instance" "server_b" {
   }
 }
 
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
+resource "aws_iam_instance_profile" "ec2_instance_profile_b" {
   provider = aws.account_b
-  name     = "ec2_instance_profile"
+  name     = "ec2_instance_profile_b"
   role     = aws_iam_role.ec2_role_b.name
 }

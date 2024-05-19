@@ -45,9 +45,9 @@ jobs:
         id: init
         run: |
           terraform init -backend-config="bucket=noa-s3-tf-state-dev" \
-                         -backend-config="key=testqu2/terraform.tfstate" \
+                         -backend-config="key=test-qu-2/terraform.tfstate" \
                          -backend-config="region=eu-west-1" \
-                         -backend-config="kms_key_id=alias/noa-kms-tf-state-s3-test" \
+                         -backend-config="kms_key_id=alias/noa-kms-tf-state-s3-dev" \
                          -backend-config="encrypt=true"
 
       - name: Plan Terraform
