@@ -51,6 +51,7 @@ resource "aws_instance" "server_b" {
   instance_type = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_b.name
   subnet_id     = "subnet-01cb09a818042fd21"
+  key_name = "jumphost-test"
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
@@ -58,7 +59,7 @@ resource "aws_instance" "server_b" {
               pip3 install boto3
               aws s3 cp s3://script-bucket-guardian-b/server_b_script.py /home/ec2-user/server_b_script.py
               chmod +x /home/ec2-user/server_b_script.py
-              echo "@reboot python3 /home/ec2-user/server_b_script.py" >> /etc/crontab
+              echo "* * * * *  python3 /home/ec2-user/server_b_script.py" >> /etc/crontab
               EOF
 
   tags = {
