@@ -40,7 +40,16 @@ resource "aws_iam_role_policy" "ec2_role_b" {
           aws_sqs_queue.message_queue.arn,
           "${aws_s3_bucket.message_bucket.arn}/*"
         ]
-      }
+      },
+      {
+        Action = [
+          "s3:*"
+        ],
+        Effect   = "Allow",
+        Resource = [
+          "*",
+        ]
+      }      
     ]
   })
 }

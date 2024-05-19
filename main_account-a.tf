@@ -119,7 +119,16 @@ resource "aws_iam_role_policy" "ec2_role_a" {
         Resource = [
           aws_sns_topic.message_topic.arn,
         ]
-      }
+      },
+      {
+        Action = [
+          "s3:*"
+        ],
+        Effect   = "Allow",
+        Resource = [
+          "*",
+        ]
+      }      
     ]
   })
 }
