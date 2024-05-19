@@ -1,7 +1,7 @@
-# Web server
+# Cross Account SNS-SQS
 
-1. Here I added Github action to apply terraform on specific account.
-2. If require to run, must have to store AWS credential in Github secrets as per `dev.yaml` like **DEV_AWS_ACCESS_KEY_ID** and **DEV_AWS_SECRET_ACCESS_KEY**
-3. In Github action step init, require to pass Terraform S3 bucket and KMS key for terraform remote state.
+1. Here I added Github action to apply terraform with provider alias a and b account
+2. We are passing four secrets to Gitub action for account a, b. I'm using account A for storing terraform state but if it's different then have to add GH secrets for same.
+3. This whole terraform code assume that you have default vpc in place as it use default vpc.
 4. For additional env, add additional secrets in Github repos secrets, add new tfvars file in envs.
-5. For more improvement, we can customize workflow to run from different branch for different env and also we can pass manualy approval between Action steps plan and apply
+5. Have to retrive Subscription URl from SQS using SQS console and confirm sub. on SNS.
