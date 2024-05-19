@@ -3,7 +3,7 @@ name: devDeploy
 on:
   push:
     branches:
-      - "**"
+      - "*"
 
 jobs:
   prod:
