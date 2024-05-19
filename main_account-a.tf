@@ -3,6 +3,13 @@ resource "aws_sns_topic" "message_topic" {
   name     = "message-topic"
 }
 
+resource "aws_sns_topic_subscription" "example_subscription" {
+  provider = aws.account_a
+  topic_arn = aws_sns_topic.message_topic.arn
+  protocol  = "sqs"
+  endpoint  = aws_sqs_queue.message_queue.arn
+}
+
 # Creating bucket account A with versioning and upload python file
 resource "aws_s3_bucket" "script_bucket_a" {
   provider = aws.account_a
