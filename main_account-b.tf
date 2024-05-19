@@ -50,7 +50,7 @@ resource "aws_instance" "server_b" {
   ami           = var.ami
   instance_type = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_b.name
-
+  subnet_id     = "subnet-01cb09a818042fd21"
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
