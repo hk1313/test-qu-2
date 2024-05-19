@@ -149,7 +149,7 @@ resource "aws_instance" "server_a" {
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
-              yum install python3 cronie -y
+              yum install python3 python3-pip cronie -y
               pip3 install boto3
               aws s3 cp s3://script-bucket-guardian-a/server_a_script.py /home/ec2-user/server_a_script.py
               chmod +x /home/ec2-user/server_a_script.py

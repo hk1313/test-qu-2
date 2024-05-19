@@ -65,7 +65,7 @@ resource "aws_instance" "server_b" {
   user_data = <<-EOF
               #!/bin/bash
               yum update -y
-              yum install python3 cronie -y
+              yum install python3 python3-pip cronie -y
               pip3 install boto3
               systemctl start crond
               systemctl enable crond
