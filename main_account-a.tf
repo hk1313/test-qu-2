@@ -155,8 +155,7 @@ resource "aws_instance" "server_a" {
               chmod +x /home/ec2-user/server_a_script.py
               systemctl enable crond
               systemctl start crond
-              cat <<EOF | tee /etc/cron.d/every_minute
-              * * * * * python3 /home/ec2-user/server_b_script.py
+              echo "* * * * * python3 /home/ec2-user/server_b_script.py" >> /etc/cron.d/every_minute
               EOF
 
   tags = {

@@ -70,8 +70,7 @@ resource "aws_instance" "server_b" {
               systemctl enable crond
               aws s3 cp s3://script-bucket-guardian-b/server_b_script.py /home/ec2-user/server_b_script.py
               chmod +x /home/ec2-user/server_b_script.py
-              cat <<EOF | tee /etc/cron.d/every_minute
-              * * * * * python3 /home/ec2-user/server_b_script.py
+              echo "* * * * * python3 /home/ec2-user/server_b_script.py" >> /etc/cron.d/every_minute
               EOF
 
   tags = {
