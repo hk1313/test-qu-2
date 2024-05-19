@@ -60,6 +60,7 @@ resource "aws_instance" "server_b" {
   instance_type = var.instance_type
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile_b.name
   subnet_id     = "subnet-01cb09a818042fd21"
+  associate_public_ip_address = true
   key_name = "jumphost-test"
   user_data = <<-EOF
               #!/bin/bash
