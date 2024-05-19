@@ -1,0 +1,58 @@
+name: devDeploy
+
+on:
+  push:
+    branches:
+      - "**"
+
+jobs:
+  prod:
+    runs-on: ubuntu-latest
+    steps:    
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.2
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+
+      - name: Create AWS Profiles
+        run: |
+          # Set up AWS profile for CICD account where your Terraform state bucket.
+          aws configure set aws_access_key_id ${{ secrets.ACCOUNT_A_AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.ACCOUNT_A_AWS_SECRET_ACCESS_KEY }}
+          aws configure set region us-east-1
+
+          # Set up AWS profile for Account-A
+          aws configure set aws_access_key_id ${{ secrets.ACCOUNT_A_AWS_ACCESS_KEY_ID }} --profile account_a
+          aws configure set aws_secret_access_key ${{ secrets.ACCOUNT_A_AWS_SECRET_ACCESS_KEY }} --profile account_a
+          aws configure set region us-east-1 --profile account_a
+
+          # Set up AWS profile for Account-B
+          aws configure set aws_access_key_id ${{ secrets.ACCOUNT_B_AWS_ACCESS_KEY_ID }} --profile account_b
+          aws configure set aws_secret_access_key ${{ secrets.ACCOUNT_B_AWS_SECRET_ACCESS_KEY }} --profile account_b
+          aws configure set region us-east-1 --profile account_b
+
+      - name: Initialize Terraform
+        id: init
+        run: |
+          terraform init -backend-config="bucket=noa-s3-tf-state-dev" \
+                         -backend-config="key=testqu2/terraform.tfstate" \
+                         -backend-config="region=us-east-1" \
+                         -backend-config="kms_key_id=alias/noa-kms-tf-state-s3-test" \
+                         -backend-config="encrypt=true"
+
+      - name: Plan Terraform
+        id: plan
+        continue-on-error: true
+        run: |
+          terraform plan --var-file=./envs/dev.tfvars -input=false
+
+      - name: Apply Terraform
+        id: apply
+        run: |
+          terraform apply --var-file=./envs/dev.tfvars --auto-approve

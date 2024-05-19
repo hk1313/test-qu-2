@@ -1,0 +1,73 @@
+resource "aws_sqs_queue" "message_queue" {
+  provider = aws.account_b
+  name     = "message-queue"
+}
+
+resource "aws_iam_role" "ec2_role_b" {
+  provider = aws.account_b
+  name     = "ec2_role_b"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "sts:AssumeRole",
+        Effect = "Allow",
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "ec2_policy" {
+  provider = aws.account_b
+  name     = "ec2_policy"
+  role     = aws_iam_role.ec2_role_b.id
+  policy   = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = [
+          "sqs:ReceiveMessage",
+          "sqs:DeleteMessage",
+          "sqs:GetQueueAttributes",
+          "s3:PutObject"
+        ],
+        Effect   = "Allow",
+        Resource = [
+          aws_sqs_queue.message_queue.arn,
+          "${aws_s3_bucket.message_bucket.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
+resource "aws_instance" "server_b" {
+  provider = aws.account_b
+  ami           = var.ami
+  instance_type = var.instance_type
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              yum install python3 -y
+              pip3 install boto3
+              aws s3 cp s3://<bucket-name>/server_b_script.py /home/ec2-user/server_b_script.py
+              chmod +x /home/ec2-user/server_b_script.py
+              echo "@reboot python3 /home/ec2-user/server_b_script.py" >> /etc/crontab
+              EOF
+
+  tags = {
+    Name = "server-b"
+  }
+}
+
+resource "aws_iam_instance_profile" "ec2_instance_profile" {
+  provider = aws.account_b
+  name     = "ec2_instance_profile"
+  role     = aws_iam_role.ec2_role_b.name
+}
