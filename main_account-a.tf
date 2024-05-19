@@ -56,7 +56,7 @@ resource "aws_s3_bucket_object" "objects_b" {
 # message bucket in account A which will get file from Account B instance script.
 resource "aws_s3_bucket" "message_bucket" {
   provider = aws.account_a
-  bucket   = "message-bucket"
+  bucket   = "message-bucket-abc"
 }
 
 resource "aws_s3_bucket_policy" "message_bucket" {

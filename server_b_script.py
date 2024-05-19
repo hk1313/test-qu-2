@@ -6,7 +6,7 @@ def receive_message():
     sqs = boto3.client('sqs', region_name='eu-west-1')
     queue_url = 'https://sqs.eu-west-1.amazonaws.com/184850965464/message-queue'
     s3 = boto3.client('s3', region_name='eu-west-1')
-    bucket_name = 'message-bucket'
+    bucket_name = 'message-bucket-abc'
 
     response = sqs.receive_message(
         QueueUrl=queue_url,
