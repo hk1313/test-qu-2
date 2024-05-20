@@ -10,5 +10,5 @@ def publish_message():
     )
     print("Message published:", response)
 
-if _name_ == "_main_":
-    publish_message()
+
+publish_message()

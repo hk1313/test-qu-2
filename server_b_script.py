@@ -30,6 +30,5 @@ def receive_message():
             os.remove(file_name)
             print("Message processed and file uploaded to S3:", file_name)
 
-if _name_ == "_main_":
-    while True:
-        receive_message()
+
+receive_message()
